@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg border-bottom sticky-top bg-body">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" href="{{ url_for('main.get_all_posts') }}">Futsum Blog</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.get_all_posts') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a></li>
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('blog.admin_dashboard') }}">Admin</a></li>
+        {% endif %}
+        {% if not current_user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+        <li class="nav-item"><a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}">Register</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a></li>
+        {% endif %}
+        <li class="nav-item ms-lg-2">
+          <button id="themeToggle" type="button" class="btn btn-outline-secondary btn-sm" aria-label="Toggle dark mode">
+            <span class="theme-icon">🌙</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

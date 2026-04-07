@@ -1,0 +1,65 @@
+:root {
+  --hero-overlay: rgba(0, 0, 0, 0.45);
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+h1, h2, h3, h4, h5, .navbar-brand {
+  font-family: "Merriweather", Georgia, serif;
+}
+
+.hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay);
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.post-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+}
+
+.comment-thread {
+  border-left: 2px solid var(--bs-border-color);
+  padding-left: 0.85rem;
+  margin-left: 0.5rem;
+}
+
+.comment-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+[data-bs-theme="dark"] .badge.text-bg-light {
+  background-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}

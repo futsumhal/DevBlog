@@ -1,31 +1,25 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+{% block title %}About · Futsum Blog{% endblock %}
 
-  <!-- Page Header -->
-  <header class="masthead" style="background-image: url({{ url_for('static', filename='img/about-bg.jpg')}})">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          <div class="page-heading">
-            <h1>About Me</h1>
-            <span class="subheading">This is what I do.</span>
-          </div>
+{% block content %}
+<section class="hero mb-4" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=80');">
+  <div class="container py-5">
+    <h1 class="display-6 mb-1">About Me</h1>
+    <p class="lead mb-0">Builder, developer, and lifelong learner.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <p class="mb-3">My name is Futsum Hallefom.</p>
+          <p class="mb-3">I am a professional web developer and Python engineer with a degree in Machine Learning and Data Science.</p>
+          <p class="mb-0">I am passionate about building useful software. Reach out through the contact page and let's grow together.</p>
         </div>
       </div>
     </div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
-        <p>MY NAME IS FUTSUM HALLEFOM</p>
-        <p>PROFESSIONAL WEB DEVELOPER,PYTHON ENGINER,DEGREE IN MACHINE LEARNING AND DATA SCIENCE</p>
-        <p>I AM DEDICATED AND PASSIONATE PYTHONE DEVELOPER,IF YOU WANT ANY THING YOU CAN CONTACT ME IN THE CONATACTS PAGE,LET'S GROW TOGETHER</p>
-      </div>
-    </div>
   </div>
-
-  <hr>
-
-  {% include "footer.html" %}
+</div>
+{% endblock %}

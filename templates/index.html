@@ -1,55 +1,88 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+{% block title %}Home · Futsum Blog{% endblock %}
 
-  <!-- Page Header -->
-  <header class="masthead" style="background-image: url('https://th.bing.com/th/id/OIP.s9GX3CNhl9u7s93Xlr4qBAHaC6?w=300&h=137&c=7&r=0&o=5&dpr=1.3&pid=1.7')">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          <div class="site-heading">
-            <h1>Futsum's Blog</h1>
-            <span class="subheading">A COLLECTION OF UNIVERSITY'S IN TIGRAY.</span>
+{% block content %}
+<section class="hero mb-4" style="background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80');">
+  <div class="container py-5">
+    <h1 class="display-6 mb-2">Futsum's Blog & Portfolio</h1>
+    <p class="lead mb-0">Thoughts on engineering, learning, and building useful products.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <form method="get" action="{{ url_for('main.get_all_posts') }}" class="card shadow-sm border-0 mb-3">
+        <div class="card-body">
+          <div class="input-group">
+            <input type="text" class="form-control" name="q" placeholder="Search posts..." value="{{ search_query or '' }}">
+            {% if selected_tag %}<input type="hidden" name="tag" value="{{ selected_tag }}">{% endif %}
+            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+            <button class="btn btn-primary" type="submit">Search</button>
           </div>
         </div>
-      </div>
-    </div>
-  </header>
+      </form>
 
-  <!-- Main Content -->
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
-        {% for post in all_posts %}
-        <div class="post-preview">
-          <a href="{{ url_for('show_post', post_id=post.id) }}">
-            <h2 class="post-title">
-              {{post.title}}
-            </h2>
-            <h3 class="post-subtitle">
-              {{post.subtitle}}
-            </h3>
-          </a>
-          <p class="post-meta">Posted by
-            <a href="#">{{post.author_name}}</a>
-            on {{post.date}}
-         {%if current_user.id==1%}
-            <a href="{{url_for('delete_post', post_id=post.id) }}">✘</a>
-          {% endif %}
-          </p>
-        </div>
-        <hr>
+      {% if selected_tag or selected_category %}
+      <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+        <span class="small text-body-secondary">Active filters:</span>
+        {% if selected_tag %}<span class="badge text-bg-primary">Tag: {{ selected_tag }}</span>{% endif %}
+        {% if selected_category %}<span class="badge text-bg-success">Category: {{ selected_category }}</span>{% endif %}
+        <a class="btn btn-sm btn-outline-danger" href="{{ url_for('main.get_all_posts', q=search_query, page=pagination.page if pagination else 1) }}">Clear Filters</a>
+      </div>
+      {% endif %}
+
+      <div class="mb-2"><strong class="small">Filter by tag</strong></div>
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.get_all_posts', q=search_query, category=selected_category) }}">All</a>
+        {% for tag in all_tags %}
+        <a class="btn btn-sm {% if selected_tag == tag.name %}btn-primary{% else %}btn-outline-primary{% endif %}" href="{{ url_for('main.get_all_posts', q=search_query, tag=tag.name, category=selected_category) }}">{{ tag.name }}</a>
         {% endfor %}
-
-
-        <!-- New Post -->
-       {%if current_user.id==1%}
-        <div class="clearfix">
-          <a class="btn btn-primary float-right" href="{{url_for('add_new_post')}}">Create New Post</a>
-        </div>
-        {% endif %}
       </div>
+
+      <div class="mb-2"><strong class="small">Filter by category</strong></div>
+      <div class="d-flex flex-wrap gap-2 mb-4">
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.get_all_posts', q=search_query, tag=selected_tag) }}">All</a>
+        {% for category in all_categories %}
+        <a class="btn btn-sm {% if selected_category == category.name %}btn-success{% else %}btn-outline-success{% endif %}" href="{{ url_for('main.get_all_posts', q=search_query, tag=selected_tag, category=category.name) }}">{{ category.name }}</a>
+        {% endfor %}
+      </div>
+
+      {% if all_posts %}
+        {% for post in all_posts %}
+          {% include "partials/_post_card.html" %}
+          {% if current_user.is_authenticated and current_user.is_admin %}
+          <div class="text-end mb-4">
+            <a class="btn btn-sm btn-outline-danger" href="{{ url_for('blog.delete_post', post_id=post.id, next=request.full_path) }}">Delete</a>
+          </div>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+      <div class="card border-0 shadow-sm"><div class="card-body text-center text-body-secondary">No posts found for the current filters.</div></div>
+      {% endif %}
+
+      {% if pagination %}
+      <div class="d-flex justify-content-between align-items-center my-4">
+        <div>
+          {% if pagination.has_prev %}
+          <a class="btn btn-outline-primary" href="{{ url_for('main.get_all_posts', page=pagination.prev_num, q=search_query, tag=selected_tag, category=selected_category) }}">Newer</a>
+          {% endif %}
+        </div>
+        <span class="small text-body-secondary">Page {{ pagination.page }} of {{ pagination.pages if pagination.pages else 1 }}</span>
+        <div>
+          {% if pagination.has_next %}
+          <a class="btn btn-outline-primary" href="{{ url_for('main.get_all_posts', page=pagination.next_num, q=search_query, tag=selected_tag, category=selected_category) }}">Older</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if current_user.is_authenticated and current_user.is_admin %}
+      <div class="text-end">
+        <a class="btn btn-primary" href="{{ url_for('blog.add_new_post') }}">Create New Post</a>
+      </div>
+      {% endif %}
     </div>
   </div>
-  <hr>
-
-{% include "footer.html" %}
+</div>
+{% endblock %}

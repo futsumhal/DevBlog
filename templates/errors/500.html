@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}500 · Server Error{% endblock %}
+
+{% block content %}
+<section class="hero mb-4" style="background-image: url('https://images.unsplash.com/photo-1463171515643-952cee54d42a?auto=format&fit=crop&w=1200&q=80');">
+  <div class="container py-5">
+    <h1 class="display-5 mb-2">500</h1>
+    <p class="lead mb-0">Something went wrong on our side.</p>
+  </div>
+</section>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm"><div class="card-body p-4 text-center">
+        <p class="mb-3">Please try again in a moment.</p>
+        <a class="btn btn-primary" href="{{ url_for('main.get_all_posts') }}">Go Home</a>
+      </div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

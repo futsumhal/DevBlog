@@ -1,0 +1,36 @@
+<article class="card shadow-sm border-0 mb-3 post-card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start gap-2">
+      <div>
+        <h3 class="h5 mb-1">
+          <a class="text-decoration-none stretched-link" href="{{ url_for('blog.show_post', post_id=post.id) }}">{{ post.title }}</a>
+        </h3>
+        <p class="text-body-secondary mb-2">{{ post.subtitle }}</p>
+      </div>
+      {% if current_user.is_authenticated and current_user.is_admin %}
+      <span class="badge {% if post.status == 'published' %}text-bg-success{% else %}text-bg-warning{% endif %}">{{ post.status }}</span>
+      {% endif %}
+    </div>
+    <p class="small text-body-secondary mb-2">By {{ post.author_name }} · {{ post.date }}</p>
+    <div class="d-flex flex-wrap gap-2 mb-2">
+      <span class="badge text-bg-light">{{ post.comments|length }} comments</span>
+      <span class="badge text-bg-light">{{ post.tags|length }} tags</span>
+    </div>
+    {% if post.tags %}
+    <p class="small mb-1">
+      <strong>Tags:</strong>
+      {% for tag in post.tags %}
+      <a href="{{ url_for('main.get_all_posts', q=search_query, tag=tag.name, category=selected_category) }}" class="text-decoration-none">#{{ tag.name }}</a>{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+    {% endif %}
+    {% if post.categories %}
+    <p class="small mb-0">
+      <strong>Categories:</strong>
+      {% for category in post.categories %}
+      <a href="{{ url_for('main.get_all_posts', q=search_query, tag=selected_tag, category=category.name) }}" class="text-decoration-none">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+    {% endif %}
+  </div>
+</article>

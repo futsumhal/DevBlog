@@ -1,36 +1,66 @@
-{% extends 'bootstrap/base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}{% if is_edit %}Edit Post{% else %}New Post{% endif %} · Futsum Blog{% endblock %}
 
 {% block content %}
-{% include "header.html" %}
-  <!-- Page Header -->
-  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/edit-bg.jpg')}}')">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          <div class="page-heading">
-            {% if is_edit: %}
-            <h1>Edit Post</h1>
-            {% else: %}
-            <h1>New Post</h1>
+<section class="hero mb-4" style="background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80');">
+  <div class="container py-5">
+    <h1 class="display-6 mb-2">{% if is_edit %}Edit Post{% else %}New Post{% endif %}</h1>
+    <p class="lead mb-0">Write and publish high-quality content.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          {{ ckeditor.load() }}
+          {{ ckeditor.config(name='body') }}
+          <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              {{ form.title.label(class="form-label") }}
+              {{ form.title(class="form-control", placeholder="Post title") }}
+              {% for error in form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+              {{ form.subtitle.label(class="form-label") }}
+              {{ form.subtitle(class="form-control", placeholder="Short subtitle") }}
+              {% for error in form.subtitle.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+              {{ form.img_url.label(class="form-label") }}
+              {{ form.img_url(class="form-control", placeholder="https://...") }}
+              {% for error in form.img_url.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+              {{ form.body.label(class="form-label") }}
+              {{ form.body(class="form-control") }}
+              {% for error in form.body.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                {{ form.tags.label(class="form-label") }}
+                {{ form.tags(class="form-control", placeholder="python, flask, web") }}
+              </div>
+              <div class="col-md-6">
+                {{ form.categories.label(class="form-label") }}
+                {{ form.categories(class="form-control", placeholder="Backend, Tutorials") }}
+              </div>
+            </div>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <div class="mt-3">
+              {{ form.status.label(class="form-label") }}
+              {{ form.status(class="form-select") }}
+            </div>
             {% endif %}
-            <span class="subheading">You're going to make a great blog post!</span>
-          </div>
+            <div class="mt-4">
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </header>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
-        {{ ckeditor.load() }}
-        {{ ckeditor.config(name='body') }}
-        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
-      </div>
-    </div>
   </div>
-
-{% include "footer.html" %}
+</div>
 {% endblock %}
